@@ -1,8 +1,13 @@
 package io.swagger.codegen.languages;
 
+import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Template;
 import io.swagger.codegen.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -50,6 +55,7 @@ public class ScalaClientCodegen extends AbstractScalaCodegen implements CodegenC
         additionalProperties.put("authPreemptive", authPreemptive);
         additionalProperties.put("clientName", clientName);
         additionalProperties.put(CodegenConstants.STRIP_PACKAGE_NAME, stripPackageName);
+        additionalProperties.put("fnEnumEntry", new EnumEntryLambda());
 
         supportingFiles.add(new SupportingFile("pom.mustache", "", "pom.xml"));
         supportingFiles.add(new SupportingFile("apiInvoker.mustache",
@@ -104,6 +110,24 @@ public class ScalaClientCodegen extends AbstractScalaCodegen implements CodegenC
         instantiationTypes.put("map", "HashMap");
 
         cliOptions.add(new CliOption(CodegenConstants.MODEL_PROPERTY_NAMING, CodegenConstants.MODEL_PROPERTY_NAMING_DESC).defaultValue("camelCase"));
+    }
+
+    public class EnumEntryLambda implements Mustache.Lambda {
+        @Override
+        public void execute(Template.Fragment frag, Writer out) throws IOException {
+            final StringWriter tempWriter = new StringWriter();
+            frag.execute(tempWriter);
+            out.write(formatIdentifier(tempWriter.toString(), true));
+        }
+    }
+
+    @Override
+    public String toEnumVarName(String value, String datatype) {
+        if (value.isEmpty()) {
+            return "Empty";
+        } else {
+            return formatIdentifier(value, true);
+        }
     }
 
     @Override

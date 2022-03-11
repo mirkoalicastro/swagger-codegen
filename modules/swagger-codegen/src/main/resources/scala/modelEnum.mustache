@@ -1,0 +1,9 @@
+{{#models}}
+{{#model}}
+object {{classname}} extends Enumeration {
+  type {{classname}} = Value
+{{#allowableValues}}{{#enumVars}}
+  val {{{name}}} = Value({{{value}}}){{/enumVars}}{{/allowableValues}}
+}
+{{/model}}
+{{/models}}

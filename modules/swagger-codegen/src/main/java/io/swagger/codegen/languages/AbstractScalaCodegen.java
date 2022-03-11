@@ -247,7 +247,7 @@ public abstract class AbstractScalaCodegen extends DefaultCodegen {
             String _import = iterator.next().get("import");
             if (_import.startsWith(prefix)) iterator.remove();
         }
-        return objs;
+        return postProcessModelsEnum(objs);
     }
 
     @Override

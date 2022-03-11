@@ -32,6 +32,8 @@ public class SwaggerCodegen {
                         .withCommands(Generate.class, Meta.class, Langs.class, Help.class,
                                 ConfigHelp.class, Validate.class, Version.class);
 
-        builder.build().parse(args).run();
+        builder.build()
+                .parse("generate", "-i", "d:\\temp\\apispec2.yml", "-l", "scala", "-o", "d:\\temp\\scala")
+                .run();
     }
 }

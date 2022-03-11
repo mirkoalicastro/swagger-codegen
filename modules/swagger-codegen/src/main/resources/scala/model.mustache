@@ -7,14 +7,35 @@ import {{import}}
 
 {{#models}}
 {{#model}}
+{{#isEnum}}{{>modelEnum}}{{/isEnum}}
+{{^isEnum}}
 case class {{classname}} (
   {{#vars}}
   {{#description}}
-  // {{{description}}}
+  /* {{{description}}} */
   {{/description}}
-  {{{name}}}: {{^required}}Option[{{/required}}{{datatype}}{{^required}}] = None{{/required}}{{#hasMore}},{{/hasMore}}
+  {{{name}}}: {{^required}}Option[{{/required}}{{^isEnum}}{{datatype}}{{/isEnum}}{{#isEnum}}{{classname}}Enums.{{datatypeWithEnum}}{{/isEnum}}{{^required}}] = None{{/required}}{{#hasMore}},{{/hasMore}}
   {{/vars}}
 )
 
+{{#hasEnums}}
+object {{classname}}Enums {
+{{#vars}}
+  {{#isEnum}}
+    type {{datatypeWithEnum}} = {{datatypeWithEnum}}.Value
+  {{/isEnum}}
+{{/vars}}
+{{#vars}}
+  {{#isEnum}}
+    object {{datatypeWithEnum}} extends Enumeration {
+    {{#_enum}}
+      val {{#fnEnumEntry}}{{.}}{{/fnEnumEntry}} = Value("{{.}}")
+    {{/_enum}}
+    }
+  {{/isEnum}}
+{{/vars}}
+}
+{{/hasEnums}}
+{{/isEnum}}
 {{/model}}
 {{/models}}
